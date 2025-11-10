@@ -5,11 +5,14 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Documents {
+    private String id;
     private String content;
     private int totalTerms;
 
-    public Documents(String filePath){
-        File document = new File(filePath);
+    public Documents(String file){
+        File document = new File(file);
+        this.id = document.getName();
+        System.out.println("File : "+ this.id +" in treatement...");
         StringBuilder sb = new StringBuilder();
         try(Scanner reader = new Scanner(document)){
             while(reader.hasNextLine()){
@@ -21,6 +24,14 @@ public class Documents {
         } catch (FileNotFoundException e) {
             System.out.println("Error While reading the file: "+ e);
         }
+        System.out.println("File : "+ this.id +" treated");
+    }
+    public Documents(String text, boolean isRequest){
+        this.id = isRequest ? "user_request" : "unknown";
+        System.out.println("File : "+ this.id +" in treatement...");
+        this.content = text;
+        TextTraitement traitement = new TextTraitement(this.content);
+        this.totalTerms = traitement.countTerms().values().stream().mapToInt(Integer::intValue).sum();
     }
     public Map<String, Double> termsFrequency(Map<String, Integer> terms){
         Map<String, Double> termFrequency = new HashMap<>();
@@ -34,5 +45,8 @@ public class Documents {
     }
     public String getContent() {
         return this.content;
+    }
+    public String getId(){
+        return this.id;
     }
 }
